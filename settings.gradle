@@ -1,0 +1,4 @@
+include ':ion'
+include ':ion-sample'
+include ':AndroidAsync'
+project(':AndroidAsync').projectDir = new File('../AndroidAsync/AndroidAsync')
