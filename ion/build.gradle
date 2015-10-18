@@ -5,13 +5,12 @@ dependencies {
     compile 'com.android.support:support-v4:+'
     compile project(':AndroidAsync')
     compile 'com.google.code.gson:gson:2.3'
-
     // for when i wanna test this against gms conscrypt
     androidTestCompile 'com.google.android.gms:play-services-base:+'
     // mockito nom nom oh god im drunk
-    androidTestCompile "org.mockito:mockito-core:1.+"
-    androidTestCompile "com.google.dexmaker:dexmaker:1.2"
-    androidTestCompile "com.google.dexmaker:dexmaker-mockito:1.2"
+    androidTestCompile 'org.mockito:mockito-core:1.+'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
 }
 
 android {
@@ -23,22 +22,21 @@ android {
                 srcDir 'src/'
             }
         }
-        androidTest.java.srcDirs=['test/src/']
-        androidTest.res.srcDirs=['test/res/']
-        androidTest.assets.srcDirs=['test/assets/']
+        androidTest.java.srcDirs = ['test/src/']
+        androidTest.res.srcDirs = ['test/res/']
+        androidTest.assets.srcDirs = ['test/assets/']
     }
-
     lintOptions {
         abortOnError false
     }
-
     defaultConfig {
         targetSdkVersion 23
-        minSdkVersion 9
+        minSdkVersion 10
     }
-
     compileSdkVersion 23
     buildToolsVersion '23.0.3'
+    productFlavors {
+    }
 }
 
 // upload to maven task

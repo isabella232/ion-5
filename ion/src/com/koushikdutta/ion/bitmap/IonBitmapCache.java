@@ -7,7 +7,6 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -19,6 +18,7 @@ import android.view.WindowManager;
 
 import com.koushikdutta.async.util.StreamUtility;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.bitmap.exif.Exif;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -196,7 +196,7 @@ public class IonBitmapCache {
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    public static Bitmap loadRegion(final BitmapRegionDecoder decoder, Rect sourceRect, int inSampleSize) {
+    public static Bitmap loadRegion(final BitmapRegionLoader decoder, Rect sourceRect, int inSampleSize) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
         return decoder.decodeRegion(sourceRect, options);

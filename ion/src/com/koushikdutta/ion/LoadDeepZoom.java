@@ -3,7 +3,6 @@ package com.koushikdutta.ion;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -13,6 +12,8 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.async.util.FileCache;
 import com.koushikdutta.async.util.StreamUtility;
 import com.koushikdutta.ion.bitmap.BitmapInfo;
+import com.koushikdutta.ion.bitmap.BitmapRegionLoader;
+import com.koushikdutta.ion.bitmap.exif.Exif;
 import com.koushikdutta.ion.gif.GifDecoder;
 import com.koushikdutta.ion.gif.GifFrame;
 
@@ -52,6 +53,7 @@ public class LoadDeepZoom extends LoadBitmapEmitter implements FutureCallback<Re
             @Override
             public void run() {
                 FileInputStream fin = null;
+                FileInputStream exifIn = null;
                 try {
                     File file;
                     // file cache will be null if the file is on the local file system already
@@ -76,11 +78,18 @@ public class LoadDeepZoom extends LoadBitmapEmitter implements FutureCallback<Re
                         return;
                     }
 
-                    BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(file.toString(), false);
+                    if (fin == null) {
+                        fin = new FileInputStream(file.toString());
+                    }
+                    exifIn = new FileInputStream(file.toString());
+                    final int rotation = Exif.getOrientation(exifIn);
+                    BitmapRegionLoader decoder = BitmapRegionLoader.newInstance(fin, rotation);
+                    if (rotation == 90 || rotation == 270) {
+                        size.set(size.y, size.x);
+                    }
                     Bitmap bitmap = decoder.decodeRegion(new Rect(0, 0, size.x, size.y), options);
                     if (bitmap == null)
                         throw new Exception("unable to load decoder");
-
                     BitmapInfo info = new BitmapInfo(key, options.outMimeType, bitmap, size);
                     info.decoder = decoder;
                     info.decoderFile = file;
@@ -90,6 +99,7 @@ public class LoadDeepZoom extends LoadBitmapEmitter implements FutureCallback<Re
                     report(e, null);
                 }
                 finally {
+                    StreamUtility.closeQuietly(exifIn);
                     StreamUtility.closeQuietly(fin);
                 }
             }

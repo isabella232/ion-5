@@ -1,15 +1,13 @@
 package com.koushikdutta.ion.bitmap;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Point;
-
 import com.koushikdutta.async.util.UntypedHashtable;
 import com.koushikdutta.ion.ResponseServedFrom;
 import com.koushikdutta.ion.gif.GifDecoder;
 
+import android.graphics.Bitmap;
+import android.graphics.Point;
+
 import java.io.File;
-import java.nio.ByteBuffer;
 
 /**
  * Created by koush on 6/12/13.
@@ -30,7 +28,7 @@ public class BitmapInfo {
     final public Bitmap bitmap;
     public Exception exception;
     public GifDecoder gifDecoder;
-    public BitmapRegionDecoder decoder;
+    public BitmapRegionLoader decoder;
     public File decoderFile;
     public final String mimeType;
     public final UntypedHashtable extras = new UntypedHashtable();

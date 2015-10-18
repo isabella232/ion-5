@@ -354,7 +354,11 @@ class IonDrawable extends LayerDrawable {
             double level = Math.max(wlevel, hlevel);
             level = Math.log(level) / LOG_2;
 
-            maxLevel = (int)Math.ceil(level);
+            // round maxLevel to prevent the scenario where the image size is
+            // barely above a power of two threshold, in which case the inital
+            // sample size will be based on a textureDim nearly twice the size
+            // of the actual image
+            maxLevel = (int)Math.round(level);
 
             // now, we know the entire image will fit in a square image of
             // this dimension:
@@ -650,17 +654,17 @@ class IonDrawable extends LayerDrawable {
 
         final boolean DEBUG_ZOOM = false;
         if (info.bitmap != null) {
-            canvas.drawBitmap(info.bitmap, null, getBounds(), paint);
+            canvas.drawBitmap(info.bitmap, null, bounds, paint);
             if (DEBUG_ZOOM) {
                 paint.setColor(Color.RED);
                 paint.setAlpha(0x80);
-                canvas.drawRect(getBounds(), paint);
+                canvas.drawRect(bounds, paint);
                 paint.setAlpha(0xFF);
             }
         }
         else {
             paint.setColor(Color.BLACK);
-            canvas.drawRect(getBounds(), paint);
+            canvas.drawRect(bounds, paint);
         }
 
         int sampleSize = 1;

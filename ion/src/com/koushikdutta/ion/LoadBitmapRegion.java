@@ -1,18 +1,18 @@
 package com.koushikdutta.ion;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.graphics.Rect;
 
 import com.koushikdutta.ion.bitmap.BitmapInfo;
+import com.koushikdutta.ion.bitmap.BitmapRegionLoader;
 import com.koushikdutta.ion.bitmap.IonBitmapCache;
 
 /**
  * Created by koush on 1/29/14.
  */
 public class LoadBitmapRegion extends BitmapCallback {
-    public LoadBitmapRegion(final Ion ion, final String key, final BitmapRegionDecoder decoder, final Rect region, final int inSampleSize) {
+    public LoadBitmapRegion(final Ion ion, final String key, final BitmapRegionLoader decoder, final Rect region, final int inSampleSize) {
         super(ion, key, true);
 
         Ion.getBitmapLoadExecutorService().execute(new Runnable() {

@@ -14,12 +14,64 @@
  * limitations under the License.
  */
 
-package com.koushikdutta.ion.bitmap;
+package com.koushikdutta.ion.bitmap.exif;
 
 import android.util.Log;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class Exif {
     private static final String TAG = "CameraExif";
+
+    public static ExifInterface getExif(byte[] jpegData) {
+        ExifInterface
+                exif = new ExifInterface();
+        try {
+            exif.readExif(jpegData);
+        } catch (IOException e) {
+            Log.w(TAG, "Failed to read EXIF data", e);
+        }
+        return exif;
+    }
+
+    // Returns the degrees in clockwise. Values are 0, 90, 180, or 270.
+    public static int getOrientation(ExifInterface exif) {
+        Integer val = exif.getTagIntValue(ExifInterface.TAG_ORIENTATION);
+        if (val == null) {
+            return 0;
+        } else {
+            return ExifInterface
+                    .getRotationForOrientationValue(val.shortValue());
+        }
+    }
+
+    public static int getOrientation(byte[] jpegData) {
+        if (jpegData == null) return 0;
+
+        ExifInterface exif = getExif(jpegData);
+        return getOrientation(exif);
+    }
+
+    public static int getOrientation(InputStream is) {
+        if (is == null) {
+            return 0;
+        }
+        ExifInterface
+                exif = new ExifInterface();
+        try {
+            exif.readExif(is);
+            Integer val = exif.getTagIntValue(ExifInterface.TAG_ORIENTATION);
+            if (val == null) {
+                return 0;
+            } else {
+                return ExifInterface.getRotationForOrientationValue(val.shortValue());
+            }
+        } catch (IOException e) {
+            Log.w(TAG, "Failed to read EXIF orientation", e);
+            return 0;
+        }
+    }
 
     // Returns the degrees in clockwise. Values are 0, 90, 180, or 270.
     public static int getOrientation(byte[] jpeg, int offset, int size) {
@@ -58,8 +110,8 @@ public class Exif {
 
             // Break if the marker is EXIF in APP1.
             if (marker == 0xE1 && length >= 8 &&
-            pack(jpeg, offset + 2, 4, false) == 0x45786966 &&
-            pack(jpeg, offset + 6, 2, false) == 0) {
+                    pack(jpeg, offset + 2, 4, false) == 0x45786966 &&
+                    pack(jpeg, offset + 6, 2, false) == 0) {
                 offset += 8;
                 length -= 8;
                 break;
@@ -120,7 +172,7 @@ public class Exif {
     }
 
     private static int pack(byte[] bytes, int offset, int length,
-                            boolean littleEndian) {
+            boolean littleEndian) {
         int step = 1;
         if (littleEndian) {
             offset += length - 1;
