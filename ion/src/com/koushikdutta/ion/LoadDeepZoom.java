@@ -82,7 +82,12 @@ public class LoadDeepZoom extends LoadBitmapEmitter implements FutureCallback<Re
                         fin = new FileInputStream(file.toString());
                     }
                     exifIn = new FileInputStream(file.toString());
-                    final int rotation = Exif.getOrientation(exifIn);
+                    int rotation;
+                    try {
+                        rotation  = Exif.getOrientation(exifIn);
+                    } catch (Exception e) {
+                        rotation = 0;
+                    }
                     BitmapRegionLoader decoder = BitmapRegionLoader.newInstance(fin, rotation);
                     if (rotation == 90 || rotation == 270) {
                         size.set(size.y, size.x);
