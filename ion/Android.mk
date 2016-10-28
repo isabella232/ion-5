@@ -17,17 +17,37 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
+LOCAL_MODULE := ion-gson
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_MAVEN_REPO := https://repo1.maven.org/maven2
+LOCAL_MAVEN_GROUP := com.google.code.gson
+LOCAL_MAVEN_ARTIFACT := gson
+LOCAL_MAVEN_PACKAGING := jar
+LOCAL_MAVEN_VERSION := 2.7
+LOCAL_UNINSTALLABLE_MODULE := true
+include $(BUILD_MAVEN_PREBUILT)
 
-LOCAL_STATIC_JAVA_LIBRARIES := AndroidAsync android-support-v4 local_gson
+include $(CLEAR_VARS)
+LOCAL_MODULE := ion-androidasync
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+LOCAL_MAVEN_REPO := https://repo1.maven.org/maven2
+LOCAL_MAVEN_GROUP := com.koushikdutta.async
+LOCAL_MAVEN_ARTIFACT := androidasync
+LOCAL_MAVEN_PACKAGING := aar
+LOCAL_MAVEN_VERSION := 2.1.9
+LOCAL_UNINSTALLABLE_MODULE := true
+include $(BUILD_MAVEN_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_STATIC_JAVA_AAR_LIBRARIES := \
+    ion-androidasync
+
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    android-support-v4 \
+    ion-gson
 
 LOCAL_MODULE := ion
-LOCAL_SDK_VERSION := 19
+LOCAL_SDK_VERSION := 23
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
-include $(CLEAR_VARS)
-
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
-    local_gson:libs/gson-2.3.jar
-
-include $(BUILD_MULTI_PREBUILT)
